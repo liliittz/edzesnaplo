@@ -8,18 +8,29 @@ window.addEventListener("DOMContentLoaded", () => {
   const listEl = document.getElementById("exerciseList");
   const addBtn = document.getElementById("addExBtn");
   const sendBtn = document.getElementById("sendBtn");
-  const msg = document.getElementById("msg");
+  const msgEl = document.getElementById("msg");
 
+  let isSending = false;
+
+  // Dátum + fejléc
   if (dateEl) dateEl.value = d.toISOString().slice(0, 10);
   if (pillEl) {
     pillEl.textContent = `Edzés: ${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.`;
   }
 
   function v(id) {
-    return (document.getElementById(id)?.value || "").trim();
+    const el = document.getElementById(id);
+    return (el && el.value ? String(el.value) : "").trim();
+  }
+
+  function setMsg(text, isError = false) {
+    if (!msgEl) return;
+    msgEl.className = isError ? "msg err" : "msg";
+    msgEl.textContent = text;
   }
 
   function collectExercises() {
+    if (!listEl) return [];
     return [...listEl.querySelectorAll("[data-ex-row]")]
       .map(row => {
         const id = row.dataset.exRow;
@@ -126,7 +137,6 @@ window.addEventListener("DOMContentLoaded", () => {
   function showWorkoutSummary() {
     const name = v("athlete_name");
     const exercises = collectExercises();
-
     const stats = calcWorkoutSummary(exercises);
     const html = buildSummaryText(name, stats);
 
@@ -139,6 +149,8 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function addExerciseRow() {
+    if (!listEl) return;
+
     const id = "ex_" + Math.random().toString(16).slice(2);
     const wrap = document.createElement("div");
     wrap.dataset.exRow = id;
@@ -179,72 +191,71 @@ window.addEventListener("DOMContentLoaded", () => {
 
       <div class="row" style="margin-top:10px;">
         <button class="secondary" type="button" data-remove="${id}">Törlés</button>
-        <button class="secondary" type="button" data-add-below>+ Új gyakorlat</button>
       </div>
     `;
 
     wrap.querySelector(`[data-remove="${id}"]`).onclick = () => wrap.remove();
-    wrap.querySelector(`[data-add-below]`).onclick = () => addExerciseRow();
-
     listEl.appendChild(wrap);
   }
 
-  // gombok
-  addBtn?.addEventListener("click", addExerciseRow);
+  // “+ Új gyakorlat” gomb (csak az alsó, HTML-ben lévő)
+  if (addBtn) addBtn.addEventListener("click", addExerciseRow);
 
   // legyen alapból 1 gyakorlat
-  if (listEl) addExerciseRow();
+  addExerciseRow();
 
-  sendBtn?.addEventListener("click", async () => {
-    showWorkoutSummary();
+  if (sendBtn) {
+    sendBtn.addEventListener("click", async () => {
+      if (isSending) return;
 
-    if (msg) {
-      msg.className = "msg";
-      msg.textContent = "Küldés...";
-    }
+      isSending = true;
+      sendBtn.disabled = true;
 
-    const payload = {
-      athlete_name: v("athlete_name"),
-      date: v("date"),
-      mood: v("mood"),
-      mood_note: v("mood_note"),
+      showWorkoutSummary();
+      setMsg("Küldés...");
 
-      exercises: collectExercises(),
+      const payload = {
+        athlete_name: v("athlete_name"),
+        date: v("date"),
+        mood: v("mood"),
+        mood_note: v("mood_note"),
 
-      q_best: v("q_best"),
-      q_fav_ex: v("q_fav_ex"),
-      q_hardest_why: v("q_hardest_why"),
-      q_disliked_ex: v("q_disliked_ex"),
-      q_hardest_part: v("q_hardest_part"),
-      q_during: v("q_during"),
-      q_after: v("q_after"),
+        exercises: collectExercises(),
 
-      overall_rpe: v("overall_rpe"),
-      overall_rpe_note: v("overall_rpe_note"),
-      overall_note: v("overall_note")
-    };
+        q_best: v("q_best"),
+        q_fav_ex: v("q_fav_ex"),
+        q_hardest_why: v("q_hardest_why"),
+        q_disliked_ex: v("q_disliked_ex"),
+        q_hardest_part: v("q_hardest_part"),
+        q_during: v("q_during"),
+        q_after: v("q_after"),
 
-    try {
-      const res = await fetch(ENDPOINT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-      const out = await res.json();
+        overall_rpe: v("overall_rpe"),
+        overall_rpe_note: v("overall_rpe_note"),
+        overall_note: v("overall_note")
+      };
 
-      if (out.ok) {
-        if (msg) msg.textContent = "✅ Sikeresen elküldve!";
-      } else {
-        if (msg) {
-          msg.className = "msg err";
-          msg.textContent = "❌ Hiba: " + (out.error || "ismeretlen");
+      try {
+        const res = await fetch(ENDPOINT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        const out = await res.json();
+
+        if (out.ok) {
+          setMsg("✅ Sikeresen elküldve!");
+        } else {
+          setMsg("❌ Hiba: " + (out.error || "ismeretlen"), true);
+          sendBtn.disabled = false;
+          isSending = false;
         }
+      } catch (e) {
+        setMsg("❌ Nem sikerült elküldeni: " + e, true);
+        sendBtn.disabled = false;
+        isSending = false;
       }
-    } catch (e) {
-      if (msg) {
-        msg.className = "msg err";
-        msg.textContent = "❌ Nem sikerült elküldeni: " + e;
-      }
-    }
-  });
+    });
+  }
 });
