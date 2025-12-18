@@ -12,19 +12,48 @@ function addExerciseRow() {
   const wrap = document.createElement("div");
   wrap.dataset.exRow = id;
   wrap.className = "card";
-  wrap.innerHTML = `
-    <label>Gyakorlat neve</label><input id="${id}_name" type="text">
-    <div class="grid">
-      <div><label>Súly</label><input id="${id}_weight" type="text"></div>
-      <div><label>Sorozat × ismétlés</label><input id="${id}_setsreps" type="text"></div>
+wrap.innerHTML = `
+  <label>Gyakorlat neve</label>
+  <input id="${id}_name" type="text">
+
+  <div class="grid">
+    <div>
+      <label>Súly (kg)</label>
+      <input id="${id}_weight"
+             type="number"
+             inputmode="decimal"
+             step="0.5"
+             min="0"
+             placeholder="pl. 20">
     </div>
-    <label>Nehézség (1–10)</label><input id="${id}_rpe" type="number" min="1" max="10">
-    <label>Jegyzet</label><textarea id="${id}_note"></textarea>
-    <button class="secondary" type="button" data-remove="${id}">Törlés</button>
-  `;
-  wrap.querySelector(`[data-remove="${id}"]`).onclick = () => wrap.remove();
-  listEl.appendChild(wrap);
-}
+    <div>
+      <label>Sorozat × ismétlés</label>
+      <input id="${id}_setsreps"
+             type="text"
+             placeholder="pl. 4x10">
+    </div>
+  </div>
+
+  <label>Nehézség (1–10)</label>
+  <input id="${id}_rpe"
+         type="number"
+         inputmode="numeric"
+         min="1"
+         max="10">
+
+  <label>Jegyzet</label>
+  <textarea id="${id}_note"></textarea>
+
+  <div class="row" style="margin-top:10px;">
+    <button class="secondary" type="button" data-remove="${id}">
+      Törlés
+    </button>
+    <button class="secondary" type="button" data-add-below>
+      + Új gyakorlat
+    </button>
+  </div>
+`;
+
 
 function v(id){ return (document.getElementById(id)?.value || "").trim(); }
 
@@ -207,6 +236,7 @@ function showWorkoutSummary() {
     msg.textContent = "❌ Nem sikerült elküldeni: " + e;
   }
 });
+
 
 
 
