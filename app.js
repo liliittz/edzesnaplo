@@ -12,47 +12,51 @@ function addExerciseRow() {
   const wrap = document.createElement("div");
   wrap.dataset.exRow = id;
   wrap.className = "card";
-wrap.innerHTML = `
-  <label>Gyakorlat neve</label>
-  <input id="${id}_name" type="text">
 
-  <div class="grid">
-    <div>
-      <label>Súly (kg)</label>
-      <input id="${id}_weight"
-             type="number"
-             inputmode="decimal"
-             step="0.5"
-             min="0"
-             placeholder="pl. 20">
+  wrap.innerHTML = `
+    <label>Gyakorlat neve</label>
+    <input id="${id}_name" type="text" />
+
+    <div class="grid">
+      <div>
+        <label>Súly (kg)</label>
+        <input id="${id}_weight"
+               type="number"
+               inputmode="decimal"
+               step="0.5"
+               min="0"
+               placeholder="pl. 20" />
+      </div>
+      <div>
+        <label>Sorozat × ismétlés</label>
+        <input id="${id}_setsreps"
+               type="text"
+               inputmode="numeric"
+               placeholder="pl. 4x10 vagy 4*10" />
+      </div>
     </div>
-    <div>
-      <label>Sorozat × ismétlés</label>
-      <input id="${id}_setsreps"
-             type="text"
-             placeholder="pl. 4x10">
+
+    <label>Nehézség (1–10)</label>
+    <input id="${id}_rpe"
+           type="number"
+           inputmode="numeric"
+           min="1"
+           max="10" />
+
+    <label>Jegyzet</label>
+    <textarea id="${id}_note"></textarea>
+
+    <div class="row" style="margin-top:10px;">
+      <button class="secondary" type="button" data-remove="${id}">Törlés</button>
+      <button class="secondary" type="button" data-add-below>+ Új gyakorlat</button>
     </div>
-  </div>
+  `;
 
-  <label>Nehézség (1–10)</label>
-  <input id="${id}_rpe"
-         type="number"
-         inputmode="numeric"
-         min="1"
-         max="10">
+  wrap.querySelector(`[data-remove="${id}"]`).onclick = () => wrap.remove();
+  wrap.querySelector(`[data-add-below]`).onclick = () => addExerciseRow();
 
-  <label>Jegyzet</label>
-  <textarea id="${id}_note"></textarea>
-
-  <div class="row" style="margin-top:10px;">
-    <button class="secondary" type="button" data-remove="${id}">
-      Törlés
-    </button>
-    <button class="secondary" type="button" data-add-below>
-      + Új gyakorlat
-    </button>
-  </div>
-`;
+  listEl.appendChild(wrap);
+}
 
 
 function v(id){ return (document.getElementById(id)?.value || "").trim(); }
@@ -236,6 +240,7 @@ function showWorkoutSummary() {
     msg.textContent = "❌ Nem sikerült elküldeni: " + e;
   }
 });
+
 
 
 
