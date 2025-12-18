@@ -53,6 +53,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   msg.textContent = "Küldés...";
 
  const payload = {
+athlete_name: v("athlete_name"),
 self_message: v("self_message"),
   date: v("date"),
   mood: v("mood"),
@@ -206,3 +207,4 @@ function showWorkoutSummary() {
     msg.textContent = "❌ Nem sikerült elküldeni: " + e;
   }
 });
+
