@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Edzésnapló</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="card">
+      <div class="title">
+        <h1>Edzésnapló</h1>
+        <div class="pill" id="sessionPill">Edzés</div>
+      </div>
+    </header>
+
+    <div class="grid">
+  <div>
+    <label>Név</label>
+    <input id="athlete_name" type="text" placeholder="Írd be a neved" />
+  </div>
+
+  <div>
+    <label>Dátum</label>
+    <input id="date" type="date" />
+  </div>
+
+  <div>
+    <label>Hangulat / energiaszint (1–10)</label>
+    <input id="mood" type="number" min="1" max="10" inputmode="numeric" />
+  </div>
+</div>
+
+
+    <div class="card soft">
+      <div class="row">
+        <h2>Gyakorlatok</h2>
+        <button class="secondary" id="addExBtn" type="button">+ Gyakorlat</button>
+      </div>
+      <div id="exerciseList"></div>
+    </div>
+
+    <div class="card">
+  <h2>Értékelés</h2>
+
+  <label>Mi ment a legjobban?</label>
+  <textarea id="q_best"></textarea>
+
+  <label>Melyik gyakorlat tetszett a legjobban?</label>
+  <textarea id="q_fav_ex"></textarea>
+
+  <label>Mi ment a legnehezebben, miért?</label>
+  <textarea id="q_hardest_why"></textarea>
+
+  <label>Melyik gyakorlat nem tetszett?</label>
+  <textarea id="q_disliked_ex"></textarea>
+
+  <label>Melyik volt a legnehezebb része az edzésnek?</label>
+  <textarea id="q_hardest_part"></textarea>
+
+  <label>Hogy érezted magad edzés közben?</label>
+  <textarea id="q_during"></textarea>
+
+  <label>Hogy érzed magad edzés után?</label>
+  <textarea id="q_after"></textarea>
+
+  <div class="grid">
+    <div>
+      <label>Edzés nehézsége összességében (1–10)</label>
+      <input id="overall_rpe" type="number" min="1" max="10" inputmode="numeric" />
+    </div>
+    <div>
+      <label>Kifejtés</label>
+      <textarea id="overall_rpe_note"></textarea>
+    </div>
+  </div>
+
+  <label>Egyéb megjegyzés</label>
+  <textarea id="overall_note"></textarea>
+  
+	<div class="soft" id="summaryCard" style="display:none; padding:14px; border-radius:18px; border:1px solid var(--border); margin-top:14px;">
+		<h2>Összegzés</h2>
+		<div class="muted" id="summaryText"></div>
+	</div>
+
+
+  <button class="btn" id="sendBtn">Küldés</button>
+  <div class="msg" id="msg"></div>
+</div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
