@@ -176,12 +176,13 @@ window.addEventListener("DOMContentLoaded", () => {
       <div class="grid">
         <div>
           <label>Súly (kg)</label>
-          <input id="${id}_weight"
-                 type="number"
-                 inputmode="decimal"
-                 step="0.5"
-                 min="0"
-                 placeholder="pl. 20" />
+         <input id="${id}_weight"
+       type="number"
+       inputmode="decimal"
+       step="0.5"
+       min="0"
+       placeholder="pl. 20" />
+
         </div>
 
         <div>
@@ -299,3 +300,4 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
