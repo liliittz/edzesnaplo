@@ -177,11 +177,11 @@ window.addEventListener("DOMContentLoaded", () => {
         <div>
           <label>Súly (kg)</label>
          <input id="${id}_weight"
-       type="number"
+       type="text"
        inputmode="decimal"
-       step="0.5"
-       min="0"
-       placeholder="pl. 20" />
+       pattern="[0-9.,-]+"
+       placeholder="pl. 20-15-10-5 vagy 17,5" />
+
 
         </div>
 
@@ -300,4 +300,5 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
